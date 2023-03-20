@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { If, Else, Then, When } from "react-if";
 
 import { Loader, Card, FormField } from "../../components";
