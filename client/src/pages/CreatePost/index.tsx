@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { If, Else, Then, When } from "react-if";
 
 import { preview } from "../../assets";
 import { getRandomPrompt } from "../../utils";
@@ -21,6 +22,8 @@ export default function CreatePost() {
   const handleChange = () => {};
 
   const handleSurpriseMe = () => {};
+
+  const generateImage = () => {};
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -52,6 +55,52 @@ export default function CreatePost() {
             isSurpriseMe
             handleSurpriseMe={handleSurpriseMe}
           />
+
+          <div className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lightBlue focus:border-lightBlue w-64 p-3 h-64 flex justify-center items-center">
+            <If condition={form.photo}>
+              <Then>
+                <img
+                  src={form.photo}
+                  alt={form.prompt}
+                  className="w-full h-full object-contain"
+                />
+              </Then>
+            </If>
+            <Else>
+              <img
+                src={preview}
+                alt="preview"
+                className="opacity-40 w-9/12 h-9/12 object-contain"
+              />
+            </Else>
+            <When condition={generatingImg}>
+              <div className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
+                <Loader />
+              </div>
+            </When>
+          </div>
+        </div>
+        <div className="mt-5 flex gap-5">
+          <button
+            className="text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            type="button"
+            onClick={generateImage}
+          >
+            {generatingImg ? "Generating..." : "Generate"}
+          </button>
+        </div>
+
+        <div className="mt-10">
+          <p className=" mt-2 text-lightText text-sm">
+            Once you have generated the image you want, you can also share it
+            with others in the community
+          </p>
+          <button
+            type="submit"
+            className="mt-3 text-white bg-lightBlue font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+          >
+            {loading ? "Sharing..." : "Share with the community"}
+          </button>
         </div>
       </form>
     </section>

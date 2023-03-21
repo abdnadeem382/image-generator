@@ -10,6 +10,7 @@ module.exports = {
         lightBg: "#f9fafe",
         darkText: "#222328",
         lightText: "#666e75",
+        grayBg: "#ECECF1",
       },
       screens: {
         xs: "480px",
