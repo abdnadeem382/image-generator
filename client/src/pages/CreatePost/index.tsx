@@ -28,7 +28,30 @@ export default function CreatePost() {
     setForm({ ...form, prompt: randomPrompt });
   };
 
-  const generateImage = () => {};
+  const generateImage = async () => {
+    if (form.prompt) {
+      try {
+        setGeneratingImg(true);
+        const res = await fetch("http://localhost:8080/api/v1/dalle", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: form.prompt }),
+        });
+
+        const data = await res.json();
+
+        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
+      } catch (error) {
+        alert(error);
+      } finally {
+        setGeneratingImg(false);
+      }
+    } else {
+      alert("Please enter a prompt");
+    }
+  };
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -70,14 +93,14 @@ export default function CreatePost() {
                   className="w-full h-full object-contain"
                 />
               </Then>
+              <Else>
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="opacity-40 w-9/12 h-9/12 object-contain"
+                />
+              </Else>
             </If>
-            <Else>
-              <img
-                src={preview}
-                alt="preview"
-                className="opacity-40 w-9/12 h-9/12 object-contain"
-              />
-            </Else>
             <When condition={generatingImg}>
               <div className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
                 <Loader />
