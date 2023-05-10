@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { If, Else, Then, When } from "react-if";
 
 import { Loader, Card, FormField } from "../../components";
@@ -25,8 +25,33 @@ const RenderCards = ({ data, title }: RenderCardsProps) => {
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
-  const [allPosts, setAllPosts] = useState(null);
+  const [allPosts, setAllPosts] = useState([]);
   const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("http://localhost:8080/api/v1/posts", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          setAllPosts(result.data.reverse());
+        }
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -64,7 +89,7 @@ export default function Home() {
                   <RenderCards data={[]} title="No search results found" />
                 </Then>
                 <Else>
-                  <RenderCards data={[]} title="No posts found" />
+                  <RenderCards data={allPosts} title="No posts found" />
                 </Else>
               </If>
             </div>
