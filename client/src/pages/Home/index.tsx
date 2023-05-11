@@ -28,6 +28,9 @@ export default function Home() {
   const [allPosts, setAllPosts] = useState([]);
   const [searchText, setSearchText] = useState("");
 
+  const [searchTimeout, setSearchTimeout] = useState<number | undefined>();
+  const [searchedResults, setSearchedResults] = useState([]);
+
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
@@ -42,6 +45,7 @@ export default function Home() {
         if (res.ok) {
           const result = await res.json();
           setAllPosts(result.data.reverse());
+          console.log(result.data);
         }
       } catch (error) {
         alert(error);
@@ -52,6 +56,22 @@ export default function Home() {
 
     fetchPosts();
   }, []);
+
+  const handleSearchChange = (e) => {
+    clearTimeout(searchTimeout);
+    setSearchText(e.target.value);
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResult = allPosts.filter(
+          (item: any) =>
+            item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.prompt.toLowerCase().includes(searchText.toLowerCase())
+        );
+        setSearchedResults(searchResult);
+      }, 500)
+    );
+  };
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -66,7 +86,14 @@ export default function Home() {
       </div>
 
       <div className="mt-16">
-        <FormField />
+        <FormField
+          labelName="Search"
+          name="search"
+          type="text"
+          placeholder="Search for posts"
+          value={searchText}
+          handleChange={handleSearchChange}
+        />
       </div>
 
       <div className="mt-10">
@@ -86,7 +113,10 @@ export default function Home() {
             <div className="grid lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 gap-3">
               <If condition={searchText}>
                 <Then>
-                  <RenderCards data={[]} title="No search results found" />
+                  <RenderCards
+                    data={searchedResults}
+                    title="No search results found"
+                  />
                 </Then>
                 <Else>
                   <RenderCards data={allPosts} title="No posts found" />

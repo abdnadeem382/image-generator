@@ -2,8 +2,8 @@ import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 
-import connectDB from "./mongodb/connect";
-import { PostsRouter, DallERouter } from "./routes";
+import connectDB from "./mongodb/connect.js";
+import { PostsRouter, DallERouter } from "./routes/index.js";
 
 dotenv.config();
 
